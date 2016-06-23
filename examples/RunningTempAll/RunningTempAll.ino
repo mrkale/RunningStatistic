@@ -25,7 +25,7 @@
   Author: Libor Gabaj
 */
 #include "RunningStatistic.h"
-#define SKETCH_VERSION "1.0.0"
+#define SKETCH_VERSION "1.1.0"
 
 // The multiplier of the sensor (degC/bit) for calculating temperature from reading
 const float convCoef = 0.107527;
@@ -61,13 +61,15 @@ void setup() {
   Serial.print(F("Running statistics from items: "));
   Serial.println(sampleCount);
   // Print header
-  Serial.println(F("Median\tAverage\tMinimum\tMaximum"));
+  Serial.println(F("Reading\tMedian\tAverage\tMinimum\tMaximum"));
 }
 
 void loop() {
   sensorData = analogRead(pinLM35);
 
   // Sensor data list
+  Serial.print(sensorData);
+  Serial.print(F("\t"));
   for (byte i = 0; i < sizeof(processedData)/sizeof(processedData[0]); i++) {
     processedData[i] = stat[i].getStatistic(sensorData);
     Serial.print(processedData[i]);
@@ -76,6 +78,9 @@ void loop() {
   Serial.println();
 
   // Temperature list
+  processedTemp = sensorData * convCoef;
+  Serial.print(processedTemp, 1);
+  Serial.print(F("\t"));
   for (byte i = 0; i < sizeof(processedData)/sizeof(processedData[0]); i++) {
     processedTemp = processedData[i] * convCoef;
     Serial.print(processedTemp, 1);
