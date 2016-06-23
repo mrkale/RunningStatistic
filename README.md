@@ -23,10 +23,10 @@ The library class includes following system header files for particular platform
 <a id="constants"></a>
 ## Constants
 - **RUNNINGSTATISTIC\_VERSION**: Semantic library version
-- **RUNNINGSTATISTIC\_BUFFER_MIN**: Minimal number of values for running statistic
-- **RUNNINGSTATISTIC\_BUFFER_MAX**: Maximal number of values for running statistic
-- **RUNNINGSTATISTIC\_BUFFER_DEF**: Default number of values for running statistic
-- **RUNNINGSTATISTIC\_BUFFER_NAN**: Represents undefined number of values for running statistic
+- **RUNNINGSTATISTIC\_BUFFER\_MIN**: Minimal number of values for running statistic
+- **RUNNINGSTATISTIC\_BUFFER\_MAX**: Maximal number of values for running statistic
+- **RUNNINGSTATISTIC\_BUFFER\_DEF**: Default number of values for running statistic
+- **RUNNINGSTATISTIC\_BUFFER\_NAN**: Represents undefined number of values for running statistic
 
 
 - **RUNNINGSTATISTIC\_MEDIAN**: Median (50% percetile) as a running statistic
