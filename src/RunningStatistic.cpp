@@ -67,11 +67,11 @@ uint16_t RunningStatistic::getStatistic(uint16_t currentValue)
       break;
 
     case RUNNINGSTATISTIC_AVERAGE:
-      statistic = currentValue;
-      for (uint8_t i = 1; i < _bufferCnt; i++) statistic += _buffer[i];
+      _buffer[0] = currentValue;
+      statistic = 0;
+      for (uint8_t i = 0; i < _bufferCnt; i++) statistic += _buffer[i];
       // Round up arithmetic mean
       statistic = (statistic + _bufferCnt - 1) / _bufferCnt;
-      _buffer[0] = statistic; // Store new average
       break;
 
     case RUNNINGSTATISTIC_MINIMUM:
@@ -97,7 +97,7 @@ uint16_t RunningStatistic::getStatistic(uint16_t currentValue)
 
 // Getters
 uint8_t RunningStatistic::getBufferLen() { return _bufferLen; };
-uint8_t RunningStatistic::getReadings() { return _bufferCnt; };
+uint8_t RunningStatistic::getReadings()  { return _bufferCnt; };
 
 // Sort array by bubblesort algorithm in ascending order
 void RunningStatistic::sort()

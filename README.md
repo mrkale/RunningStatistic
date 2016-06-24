@@ -43,6 +43,7 @@ The library class includes following system header files for particular platform
 - [getBufferLen()](#getBufferLen)
 - [getReadings()](#getReadings)
 
+
 <a id="RunningStatistic"></a>
 ## RunningStatistic()
 #### Description
@@ -53,7 +54,7 @@ Constructor creates the data buffer within a class instance object, which holds 
 - The class may be used for original digital data as well, where the running statistical processing is desirable.
 
 #### Syntax
-  RunningStatistic(uint8_t runningType, uint8_t bufferLen);
+    RunningStatistic(uint8_t runningType, uint8_t bufferLen);
 
 #### Parameters
 <a id="runningType"></a>
@@ -91,7 +92,7 @@ max = RunningStatistic(RUNNINGSTATISTIC_MAXIMUM);   // Running maximum with defa
 The method initiate all internal counters and status flags of a class instance object to default values as they are right after power up of a microcontroler.
 
 #### Syntax
-  void init();
+    void init();
 
 #### Parameters
 None
@@ -111,7 +112,7 @@ None
 The method calculates and returns a new running statistic of a type defined in [constuctor](#RunningStatistic) from the current input value and previous running statistics and stores it in the data buffer for the future calculation.
 
 #### Syntax
-  uint16_t getStatistic(uint16_t currentValue);
+    uint16_t getStatistic(uint16_t currentValue);
 
 #### Parameters
 - **currentValue**: 16-bit value to be used for calculating a new running statistic.
@@ -137,7 +138,7 @@ The method returns current length of the data buffer used for calculation.
 - The method is useful if the length has been put to the constructor as a numeric literal and there is no variable of the length to use it in other statements.
 
 #### Syntax
-  uint8_t getBufferLen();
+    uint8_t getBufferLen();
 
 #### Parameters
 None
@@ -160,7 +161,7 @@ The method returns number of running values of a statistic in the data buffer, w
 - After a while after initialization the returned value is same as the length of the data buffer.
 
 #### Syntax
-  uint8_t getReadings();
+    uint8_t getReadings();
 
 #### Parameters
 None
