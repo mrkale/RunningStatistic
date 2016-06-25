@@ -3,15 +3,14 @@
   RunningStatistic
 
   DESCRIPTION:
-  The library provides calculation of a running statistic value from previously
-  calculated and stored ones in 16-bit resolution.
+  The library provides calculation of a running statistic value from
+  recent sensor readings including the current one that are stored in the
+  library instance object in 16-bit resolution.
   - The library calculates running median, average, minimum, and maximum
     as a statistic.
   - One library instance object can calculate running values just for one
     statistic, e.g., median or average, etc.
-  - A new running statistic is calculated from current sensor reading and
-    previously calculated and stored running values.
-  - A new running value substitutes the current sensor value.
+  - A running value substitutes the current sensor value.
   - As a current sensor data may be used a smoothed sensor value calculated
     by the library SmoothSensorData.
   - The library is suitable for Arduino as well as for Particle Photon
@@ -31,7 +30,7 @@
  */
 #ifndef RUNNINGSTATISTIC_H
 #define RUNNINGSTATISTIC_H
-#define RUNNINGSTATISTIC_VERSION "1.2.0"
+#define RUNNINGSTATISTIC_VERSION "1.3.0"
 
 #ifdef SPARK
   #include "Particle.h"
@@ -90,9 +89,6 @@ public:
                 - For median the buffer length should be odd number. If it
                   is not, the constructor adds 1 to it right before limiting
                   the length in order to make it odd.
-                - For extreme statistics (minimum, maximum) the library
-                  always uses 1 for the data buffer length regardless of the
-                  input or default value.                  
                 - The constructor limits the input buffer length to allowed range.
                 - Data type: positive integer
                 - Default value: by statistic type, see macros

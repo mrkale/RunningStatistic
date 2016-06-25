@@ -1,6 +1,6 @@
 <a id="library"></a>
 # RunningStatistic
-The library provides calculation of a running statistic value from previously calculated and stored ones in 16-bit resolution, i.e., median, average, minimum, and maximum. The library is usable for Arduino as well as for Particle Photon (and probably Electron and P1 as well).
+The library provides calculation of a running statistic value from recent sensor readings including the current one that are stored in the library instance object in 16-bit resolution, i.e., median, average, minimum, and maximum. The library is usable for Arduino as well as for Particle Photon (and probably Electron and P1 as well).
 
 
 <a id="credit"></a>
@@ -68,7 +68,6 @@ Constructor creates the data buffer within a class instance object, which holds 
 - **bufferLen**: Number of running statistics held in the data buffer used for calculating a new running statistic.
   - The constructor limits the input buffer length to allowed range.
   - For median the buffer length should be odd number. If it is not, the constructor adds 1 to it right before limiting the length in order to make it odd.
-  - For extreme statistics (minimum, maximum) the library always uses 1 for the data buffer length regardless of the input or default value.
   - *Valid values*: positive integer in the range 3 to 11
   - *Default value*: 5
 

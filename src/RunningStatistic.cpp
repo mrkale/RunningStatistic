@@ -4,30 +4,22 @@ RunningStatistic::RunningStatistic(uint8_t runningType, uint8_t bufferLen)
 {
   _runningType = runningType;
   _bufferLen = (bufferLen == RUNNINGSTATISTIC_BUFFER_NAN ? RUNNINGSTATISTIC_BUFFER_DEF : bufferLen);
-  // Set buffer length
   switch(_runningType) {
 
+    case RUNNINGSTATISTIC_AVERAGE:
     case RUNNINGSTATISTIC_MINIMUM:
     case RUNNINGSTATISTIC_MAXIMUM:
-      _bufferLen = 1;
       break;
 
     case RUNNINGSTATISTIC_MEDIAN:
       _bufferLen = _bufferLen | 1;
       break;
 
-    case RUNNINGSTATISTIC_AVERAGE:
     default:
       _runningType = RUNNINGSTATISTIC_AVERAGE;
       break;
   }
-  // Limit buffer length
-  switch(_runningType) {
-    case RUNNINGSTATISTIC_MEDIAN:
-    case RUNNINGSTATISTIC_AVERAGE:
-      _bufferLen = constrain(_bufferLen, RUNNINGSTATISTIC_BUFFER_MIN, RUNNINGSTATISTIC_BUFFER_MAX);
-      break;
-  }
+  _bufferLen = constrain(_bufferLen, RUNNINGSTATISTIC_BUFFER_MIN, RUNNINGSTATISTIC_BUFFER_MAX);
   init();
 }
 
@@ -35,16 +27,6 @@ RunningStatistic::RunningStatistic(uint8_t runningType, uint8_t bufferLen)
 void RunningStatistic::init()
 {
   _bufferCnt = 0;
-  switch(_runningType) {
-
-    case RUNNINGSTATISTIC_MINIMUM:
-      _buffer[0] = -1;  // Maximal possible value
-      break;
-
-      case RUNNINGSTATISTIC_MAXIMUM:
-      _buffer[0] = 0;  // Minimal possible value
-      break;
-  }
 }
 
 /* Register data item into the buffer and return running value of the statistic.
@@ -55,11 +37,11 @@ uint16_t RunningStatistic::getStatistic(uint16_t currentValue)
   uint16_t statistic;
 
   // Statistical running calculation processing
-  shiftRight(); // Shift buffer and set _bufferCnt to 1 at least
+  shiftRight(); // Shift buffer for current value and increase _bufferCnt
+  _buffer[0] = currentValue;
   switch(_runningType) {
 
     case RUNNINGSTATISTIC_MEDIAN:
-      _buffer[0] = currentValue;
       for (uint8_t i = 0; i < _bufferCnt; i++) _sorter[i] = _buffer[i];
       sort();
       // Round down median index
@@ -67,7 +49,6 @@ uint16_t RunningStatistic::getStatistic(uint16_t currentValue)
       break;
 
     case RUNNINGSTATISTIC_AVERAGE:
-      _buffer[0] = currentValue;
       statistic = 0;
       for (uint8_t i = 0; i < _bufferCnt; i++) statistic += _buffer[i];
       // Round up arithmetic mean
@@ -76,19 +57,15 @@ uint16_t RunningStatistic::getStatistic(uint16_t currentValue)
 
     case RUNNINGSTATISTIC_MINIMUM:
       statistic = currentValue;
-      if (currentValue < _buffer[0]) {
-        _buffer[0] = currentValue; // Store new minimum
-      } else {
-        statistic = _buffer[0]; // Return old minimum
+      for (uint8_t i = 1; i < _bufferCnt; i++) { 
+        if (_buffer[i] < statistic) statistic = _buffer[i];
       }
       break;
 
     case RUNNINGSTATISTIC_MAXIMUM:
       statistic = currentValue;
-      if (currentValue > _buffer[0]) {
-        _buffer[0] = currentValue; // Store new maximum
-      } else {
-        statistic = _buffer[0]; // Return old maximum
+      for (uint8_t i = 1; i < _bufferCnt; i++) { 
+        if (_buffer[i] > statistic) statistic = _buffer[i];
       }
       break;
   }
