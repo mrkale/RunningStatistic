@@ -30,7 +30,7 @@
  */
 #ifndef RUNNINGSTATISTIC_H
 #define RUNNINGSTATISTIC_H
-#define RUNNINGSTATISTIC_VERSION "1.3.0"
+#define RUNNINGSTATISTIC_VERSION "1.3.1"
 
 #ifdef SPARK
   #include "Particle.h"

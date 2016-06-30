@@ -17,7 +17,6 @@ RunningStatistic::RunningStatistic(uint8_t runningType, uint8_t bufferLen)
 
     default:
       _runningType = RUNNINGSTATISTIC_AVERAGE;
-      break;
   }
   _bufferLen = constrain(_bufferLen, RUNNINGSTATISTIC_BUFFER_MIN, RUNNINGSTATISTIC_BUFFER_MAX);
   init();
@@ -56,17 +55,13 @@ uint16_t RunningStatistic::getStatistic(uint16_t currentValue)
       break;
 
     case RUNNINGSTATISTIC_MINIMUM:
-      statistic = currentValue;
-      for (uint8_t i = 1; i < _bufferCnt; i++) {
-        if (_buffer[i] < statistic) statistic = _buffer[i];
-      }
+      statistic = _buffer[0];
+      for (uint8_t i = 1; i < _bufferCnt; i++) statistic = min(statistic, _buffer[i]);
       break;
 
     case RUNNINGSTATISTIC_MAXIMUM:
-      statistic = currentValue;
-      for (uint8_t i = 1; i < _bufferCnt; i++) {
-        if (_buffer[i] > statistic) statistic = _buffer[i];
-      }
+      statistic = _buffer[0];
+      for (uint8_t i = 1; i < _bufferCnt; i++) statistic = max(statistic, _buffer[i]);
       break;
   }
   return statistic;
