@@ -1,6 +1,6 @@
 /*
   NAME:
-  Full usage of RunningStatistic library
+  Full usage of RunningStatistic library with sensor data filtering
 
   DESCRIPTION:
   This sketch demonstrates the use of RunningStatistic with determining all
@@ -25,30 +25,31 @@
   Author: Libor Gabaj
 */
 #include "RunningStatistic.h"
-#define SKETCH_VERSION "1.1.0"
+#define SKETCH_VERSION "1.2.0"
 
 // The multiplier of the sensor (degC/bit) for calculating temperature from reading
-const float convCoef = 0.107527;
+const float COEF_CONF = 0.107527;
 
 // Pin for analog reading of the sensor LM35DZ
-const byte pinLM35 = A0;
-
-// Number of readings for calculating running value.
-const byte sampleCount = 5;
+const byte PIN_LM35 = A0;
 
 // Time in miliseconds between temperature readings
-const word runDelay = 5000;
+const word PERIOD_DELAY = 5000;
 
 word sensorData;              // Data from sensor
 word processedData[4];        // Statistically processed sensor data
 float processedTemp;          // Statistically processed ambient temperature
 
 // Create array of objects for running statistics of temperature
+// Minimal and maximal sensor value for the reasonable temperature range 5 - 50 degC
+const word SENSOR_DATA_MIN = 46;  // ~5/0.107527
+const word SENSOR_DATA_MAX = 465; // ~50/0.107527
+const word RUNNING_SAMPLES = 11;  // Specific number of subsequent values for running statistics
 RunningStatistic stat[] = {
-  RunningStatistic(RUNNINGSTATISTIC_MEDIAN, sampleCount),
-  RunningStatistic(RUNNINGSTATISTIC_AVERAGE, sampleCount),
-  RunningStatistic(RUNNINGSTATISTIC_MINIMUM, sampleCount),
-  RunningStatistic(RUNNINGSTATISTIC_MAXIMUM, sampleCount)
+  RunningStatistic(RUNNINGSTATISTIC_MEDIAN,  SENSOR_DATA_MAX, SENSOR_DATA_MIN, RUNNING_SAMPLES),
+  RunningStatistic(RUNNINGSTATISTIC_AVERAGE, SENSOR_DATA_MAX, SENSOR_DATA_MIN, RUNNING_SAMPLES),
+  RunningStatistic(RUNNINGSTATISTIC_MINIMUM, SENSOR_DATA_MAX, SENSOR_DATA_MIN, RUNNING_SAMPLES),
+  RunningStatistic(RUNNINGSTATISTIC_MAXIMUM, SENSOR_DATA_MAX, SENSOR_DATA_MIN, RUNNING_SAMPLES)
 };
 
 void setup() {
@@ -59,13 +60,17 @@ void setup() {
   Serial.print(F("RunningStatistic v"));
   Serial.println(RUNNINGSTATISTIC_VERSION);
   Serial.print(F("Running statistics from items: "));
-  Serial.println(sampleCount);
+  Serial.println(stat[0].getBufferLen());
+  Serial.print(F("Valid sensor data range: "));
+  Serial.print(stat[0].getValueMin());
+  Serial.print(F(" ~ "));
+  Serial.println(stat[0].getValueMax());
   // Print header
   Serial.println(F("Reading\tMedian\tAverage\tMinimum\tMaximum"));
 }
 
 void loop() {
-  sensorData = analogRead(pinLM35);
+  sensorData = analogRead(PIN_LM35);
 
   // Sensor data list
   Serial.print(sensorData);
@@ -78,15 +83,15 @@ void loop() {
   Serial.println();
 
   // Temperature list
-  processedTemp = sensorData * convCoef;
+  processedTemp = sensorData * COEF_CONF;
   Serial.print(processedTemp, 1);
   Serial.print(F("\t"));
   for (byte i = 0; i < sizeof(processedData)/sizeof(processedData[0]); i++) {
-    processedTemp = processedData[i] * convCoef;
+    processedTemp = processedData[i] * COEF_CONF;
     Serial.print(processedTemp, 1);
     Serial.print(F("\t"));
   }
   Serial.println();
   Serial.println();
-  delay(runDelay);
+  delay(PERIOD_DELAY);
 }

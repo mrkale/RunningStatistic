@@ -24,23 +24,23 @@
   Author: Libor Gabaj
 */
 #include "RunningStatistic.h"
-#define SKETCH_VERSION "1.1.0"
+#define SKETCH_VERSION "1.2.0"
 
 // The multiplier of the sensor (degC/bit) for calculating temperature from reading
-const float convCoef = 0.107527;
+const float COEF_CONF = 0.107527;
 
 // Pin for analog reading of the sensor LM35DZ
-const byte pinLM35 = A0;
+const byte PIN_LM35 = A0;
 
 // Time in miliseconds between temperature readings
-const word runDelay = 5000;
+const word PERIOD_DELAY = 5000;
 
 word sensorData;              // Read sensor data
 word processedData;           // Statistically processed sensor data
 float processedTemp;          // Statistically processed ambient temperature
 
-// Create object for running averaged temperature (smoothing sensor measurement)
-RunningStatistic avgRunningTemp = RunningStatistic();
+// Create object for running averaged temperature
+RunningStatistic avgRunningTemp;
 
 void setup() {
   Serial.begin(9600);
@@ -52,14 +52,14 @@ void setup() {
   // Print header
   Serial.print(F("Running average from items: "));
   Serial.println(avgRunningTemp.getBufferLen());
-  Serial.println(F("Reading\tStatistic\tTemperature\tItems"));
+  Serial.println(F("Reading\tAverage\tTemp\tItems"));
 }
 
 void loop() {
   // New running values
-  sensorData = analogRead(pinLM35);
+  sensorData = analogRead(PIN_LM35);
   processedData = avgRunningTemp.getStatistic(sensorData);
-  processedTemp = processedData * convCoef;
+  processedTemp = processedData * COEF_CONF;
   // Show result
   Serial.print(sensorData);
   Serial.print(F("\t"));
@@ -68,5 +68,5 @@ void loop() {
   Serial.print(processedTemp, 1);
   Serial.print(F("\t"));
   Serial.println(avgRunningTemp.getReadings());
-  delay(runDelay);
+  delay(PERIOD_DELAY);
 }

@@ -1,23 +1,24 @@
-#include <RunningStatistic.h>
+#include "RunningStatistic.h"
 
-RunningStatistic::RunningStatistic(uint8_t runningType, uint8_t bufferLen)
+RunningStatistic::RunningStatistic(uint8_t runningType, uint16_t valueMax, uint16_t valueMin, uint8_t bufferLen)
 {
   _runningType = runningType;
-  _bufferLen = (bufferLen == RUNNINGSTATISTIC_BUFFER_NAN ? RUNNINGSTATISTIC_BUFFER_DEF : bufferLen);
+  _bufferLen = bufferLen;
   switch(_runningType) {
-
     case RUNNINGSTATISTIC_AVERAGE:
     case RUNNINGSTATISTIC_MINIMUM:
     case RUNNINGSTATISTIC_MAXIMUM:
       break;
-
     case RUNNINGSTATISTIC_MEDIAN:
       _bufferLen = _bufferLen | 1;
       break;
-
     default:
       _runningType = RUNNINGSTATISTIC_AVERAGE;
   }
+  // Sanitize arguments
+  _valueMax  = constrain(valueMax, RUNNINGSTATISTIC_MIN, RUNNINGSTATISTIC_MAX);
+  _valueMin  = constrain(valueMin, RUNNINGSTATISTIC_MIN, RUNNINGSTATISTIC_MAX);
+  swap(_valueMin, _valueMax); // Sort valid range values
   _bufferLen = constrain(_bufferLen, RUNNINGSTATISTIC_BUFFER_MIN, RUNNINGSTATISTIC_BUFFER_MAX);
   init();
 }
@@ -33,7 +34,11 @@ void RunningStatistic::init()
  */
 uint16_t RunningStatistic::getStatistic(uint16_t currentValue)
 {
-  uint16_t statistic;
+  uint16_t statistic = RUNNINGSTATISTIC_NAN;
+
+  // Test value against valid range
+  if (currentValue < _valueMin) return statistic;
+  if (currentValue > _valueMax) return statistic;
 
   // Statistical running calculation processing
   shiftRight(); // Shift buffer for current value and increase _bufferCnt
@@ -51,7 +56,7 @@ uint16_t RunningStatistic::getStatistic(uint16_t currentValue)
       statistic = 0;
       for (uint8_t i = 0; i < _bufferCnt; i++) statistic += _buffer[i];
       // Round up arithmetic mean
-      statistic = (statistic + _bufferCnt - 1) / _bufferCnt;
+      statistic = divide(statistic, _bufferCnt);
       break;
 
     case RUNNINGSTATISTIC_MINIMUM:
@@ -67,9 +72,18 @@ uint16_t RunningStatistic::getStatistic(uint16_t currentValue)
   return statistic;
 }
 
+//-------------------------------------------------------------------------
 // Getters
-uint8_t RunningStatistic::getBufferLen() { return _bufferLen; };
-uint8_t RunningStatistic::getReadings()  { return _bufferCnt; };
+//-------------------------------------------------------------------------
+uint8_t  RunningStatistic::getBufferLen()   { return _bufferLen; };
+uint8_t  RunningStatistic::getReadings()    { return _bufferCnt; };
+uint8_t  RunningStatistic::getRunningType() { return _runningType; };
+uint16_t RunningStatistic::getValueMin()    { return _valueMin; };
+uint16_t RunningStatistic::getValueMax()    { return _valueMax; };
+
+//-------------------------------------------------------------------------
+// Private methods
+//-------------------------------------------------------------------------
 
 // Sort array by bubblesort algorithm in ascending order
 void RunningStatistic::sort()
