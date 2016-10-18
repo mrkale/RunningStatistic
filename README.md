@@ -12,7 +12,7 @@ The library provides calculation of a running statistic value from recent sensor
 
 <a id="Constants"></a>
 ## Constants
-- **RUNNINGSTATISTIC\_VERSION**: Semantic library version
+- **RUNNINGSTATISTIC\_VERSION**: Name and semantic library version
 - **RUNNINGSTATISTIC\_NAN**: Represents undefined sensor data
 - **RUNNINGSTATISTIC\_MIN**: Minimal value for sensor data
 - **RUNNINGSTATISTIC\_MAX**: Maximal value for sensor data

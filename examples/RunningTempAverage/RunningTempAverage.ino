@@ -24,7 +24,7 @@
   Author: Libor Gabaj
 */
 #include "RunningStatistic.h"
-#define SKETCH_VERSION "1.2.0"
+#define SKETCH "RunningTempAverage 1.3.0"
 
 // The multiplier of the sensor (degC/bit) for calculating temperature from reading
 const float COEF_CONF = 0.107527;
@@ -45,10 +45,8 @@ RunningStatistic avgRunningTemp;
 void setup() {
   Serial.begin(9600);
   analogReference(INTERNAL);  // Set analog reference voltage to 1.1V
-  Serial.print(F("Sketch v"));
-  Serial.println(SKETCH_VERSION);
-  Serial.print(F("RunningStatistic v"));
-  Serial.println(RUNNINGSTATISTIC_VERSION);
+  Serial.println(F(SKETCH));
+  Serial.println(F(RUNNINGSTATISTIC_VERSION));
   // Print header
   Serial.print(F("Running average from items: "));
   Serial.println(avgRunningTemp.getBufferLen());
