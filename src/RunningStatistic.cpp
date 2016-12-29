@@ -4,16 +4,20 @@ RunningStatistic::RunningStatistic(uint8_t runningType, uint16_t valueMax, uint1
 {
   _runningType = runningType;
   _bufferLen = bufferLen;
-  switch(_runningType) {
+  switch(_runningType)
+  {
     case RUNNINGSTATISTIC_AVERAGE:
     case RUNNINGSTATISTIC_MINIMUM:
     case RUNNINGSTATISTIC_MAXIMUM:
       break;
+
     case RUNNINGSTATISTIC_MEDIAN:
       _bufferLen = _bufferLen | 1;
       break;
+
     default:
       _runningType = RUNNINGSTATISTIC_AVERAGE;
+      break;
   }
   // Sanitize arguments
   _valueMax  = constrain(valueMax, RUNNINGSTATISTIC_MIN, RUNNINGSTATISTIC_MAX);
@@ -43,7 +47,8 @@ uint16_t RunningStatistic::getStatistic(uint16_t currentValue)
   // Statistical running calculation processing
   shiftRight(); // Shift buffer for current value and increase _bufferCnt
   _buffer[0] = currentValue;
-  switch(_runningType) {
+  switch(_runningType)
+  {
 
     case RUNNINGSTATISTIC_MEDIAN:
       for (uint8_t i = 0; i < _bufferCnt; i++) _sorter[i] = _buffer[i];
@@ -89,9 +94,12 @@ uint16_t RunningStatistic::getValueMax()    { return _valueMax; };
 void RunningStatistic::sort()
 {
   bool again = true;
-  for(byte i = 0; i < _bufferCnt-1 && again; i++) {
-    for(byte j = _bufferCnt-1, again = false; j > i; --j) {
-      if(_sorter[j] < _sorter[j-1]) {
+  for(byte i = 0; i < _bufferCnt-1 && again; i++)
+  {
+    for(byte j = _bufferCnt-1, again = false; j > i; --j)
+    {
+      if(_sorter[j] < _sorter[j-1])
+      {
         uint16_t t = _sorter[j];
         _sorter[j] = _sorter[j-1];
         _sorter[j-1] = t;
@@ -104,7 +112,8 @@ void RunningStatistic::sort()
 // Shift array to the right so that 0 index is reserved for the new value
 void RunningStatistic::shiftRight()
 {
-  for(byte i = _bufferCnt; i > 0 ; --i) {
+  for(byte i = _bufferCnt; i > 0 ; --i)
+  {
     // Forget the oldest (most right) value in the buffer if it is full
     if (i < _bufferLen) _buffer[i] = _buffer[i-1];
   }
