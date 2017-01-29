@@ -5,6 +5,11 @@ The library provides calculation of a running statistic value from recent sensor
 
 <a id="dependency"></a>
 ## Dependency
+
+#### Particle platform
+- **Particle.h**: Includes alternative (C++) data type definitions.
+
+#### Arduino platform
 - **Arduino.h**: Main include file for the Arduino SDK version greater or equal to 100.
 - **WProgram.h**: Main include file for the Arduino SDK version less than 100.
 - **inttypes.h**: Integer type conversions. This header file includes the exact-width integer definitions and extends them with additional facilities provided by the implementation.

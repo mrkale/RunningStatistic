@@ -1,4 +1,4 @@
-#include "RunningStatistic.h"
+#include "running-statistic.h"
 
 RunningStatistic::RunningStatistic(uint8_t runningType, uint16_t valueMax, uint16_t valueMin, uint8_t bufferLen)
 {
@@ -22,16 +22,18 @@ RunningStatistic::RunningStatistic(uint8_t runningType, uint16_t valueMax, uint1
   // Sanitize arguments
   _valueMax  = constrain(valueMax, RUNNINGSTATISTIC_MIN, RUNNINGSTATISTIC_MAX);
   _valueMin  = constrain(valueMin, RUNNINGSTATISTIC_MIN, RUNNINGSTATISTIC_MAX);
-  swap(_valueMin, _valueMax); // Sort valid range values
+  swapdata(_valueMin, _valueMax); // Sort valid range values
   _bufferLen = constrain(_bufferLen, RUNNINGSTATISTIC_BUFFER_MIN, RUNNINGSTATISTIC_BUFFER_MAX);
   init();
 }
+
 
 // Initialize all status variables
 void RunningStatistic::init()
 {
   _bufferCnt = 0;
 }
+
 
 /* Register data item into the buffer and return running value of the statistic.
  * The most recent (fresh) statistic is always in the 0 index of the buffer.
@@ -77,6 +79,7 @@ uint16_t RunningStatistic::getStatistic(uint16_t currentValue)
   return statistic;
 }
 
+
 //-------------------------------------------------------------------------
 // Getters
 //-------------------------------------------------------------------------
@@ -86,6 +89,7 @@ uint8_t  RunningStatistic::getRunningType() { return _runningType; };
 uint16_t RunningStatistic::getValueMin()    { return _valueMin; };
 uint16_t RunningStatistic::getValueMax()    { return _valueMax; };
 
+
 //-------------------------------------------------------------------------
 // Private methods
 //-------------------------------------------------------------------------
@@ -94,9 +98,10 @@ uint16_t RunningStatistic::getValueMax()    { return _valueMax; };
 void RunningStatistic::sort()
 {
   bool again = true;
-  for(byte i = 0; i < _bufferCnt-1 && again; i++)
+  for(byte i = 0; i < (_bufferCnt - 1) && again; i++)
   {
-    for(byte j = _bufferCnt-1, again = false; j > i; --j)
+    again = false;
+    for(byte j = _bufferCnt - 1; j > i; --j)
     {
       if(_sorter[j] < _sorter[j-1])
       {
@@ -108,6 +113,7 @@ void RunningStatistic::sort()
     }
   }
 }
+
 
 // Shift array to the right so that 0 index is reserved for the new value
 void RunningStatistic::shiftRight()
